@@ -1,0 +1,39 @@
+body {
+    font-family: 'M PLUS 1', sans-serif;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+#artwork {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.image {
+    width: 100%;
+}
+
+.introduction {
+    width: calc(100% - 64px);
+}
+
+#stamps-container {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 56px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.stamps-num {
+    margin-right: 0.4em;
+}
