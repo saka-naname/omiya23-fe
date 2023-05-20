@@ -1,10 +1,30 @@
-let url = new URL(window.location.href);
-let params = url.searchParams;
+const url = new URL(window.location.href);
+const params = url.searchParams;
+let storage = [];
+if (localStorage.getItem("obtainedStamps")) {
+    storage = JSON.parse(localStorage.getItem("obtainedStamps"));
+}
+
+const getStampCountsSafe = () => {
+    if (!storage) {
+        return 0;
+    }
+    return storage.length;
+}
+
+const obtainStamp = (id) => {
+    if (storage.every(elem => {return elem != id})) {
+        storage.push(id);
+        localStorage.setItem("obtainedStamps", JSON.stringify(storage));
+        return true;
+    }
+    return false;
+}
 
 const renderArtworkPage = async (res) => {
     const rj = await res.json();
 
-    const aw = document.getElementById("artwork");
+    const aw = document.getElementsByClassName("artwork")[0];
 
     if (rj == false) {
         const errText = document.createElement("span");
@@ -30,18 +50,30 @@ const renderArtworkPage = async (res) => {
     aw.appendChild(introduction);
 }
 
-// if (params.get("artwork")) {
-//     let id = params.get("artwork");
-//     // if (RegExp(/[sd][0-9]{5}/).test(id)) {
-//         (async () => renderArtworkPage(id));
-        
-//     // }
-// }
+const artwork_page = () => {
+    let id = params.get("artwork");
+    if(id && RegExp(/[sd][0-9]{5}/).test(id)) {
+        // 作品ページにアクセスした場合の処理
+        fetch(`https://digicre.shibalab.com/event/2023-omiya/?artwork=${params.get("artwork")}`, {mode: "cors"})
+        .then(res => renderArtworkPage(res))
 
-let id = params.get("artwork");
+        let obtained_flag;
+        obtained_flag = obtainStamp(id);
 
-if(id && RegExp(/[sd][0-9]{5}/).test(id))
-    fetch(`https://digicre.shibalab.com/event/2023-omiya/?artwork=${params.get("artwork")}`, {mode: "cors"})
-    .then(res => renderArtworkPage(res))
-if (id && !RegExp(/[sd][0-9]{5}/).test(id))
-    (async () => renderArtworkPage(new Object({json: () => {return false}})))();
+        if (obtained_flag) {
+            // 初回アクセス(スタンプ新規獲得)時のみここが実行される
+
+        }
+    }
+
+    if (id && !RegExp(/[sd][0-9]{5}/).test(id))
+        (async () => renderArtworkPage(new Object({json: () => {return false}})))();
+}
+
+const refresh_counts = () => {
+    const stamps_num = document.getElementsByClassName("stamps-num")[0];
+    stamps_num.innerText = getStampCountsSafe();
+}
+
+artwork_page();
+refresh_counts();
