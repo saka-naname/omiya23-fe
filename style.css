@@ -72,3 +72,33 @@ footer {
 
     padding: 16px;
 }
+
+.first-visit{
+    display: none;
+    top: 0;
+    left: 0;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #ccf7;
+    color: #000;
+    z-index: 99;
+    text-align: center;
+    padding-top: 45vh;
+    font-size: 2em;
+}
+
+.first-visit.first-visit-animation{
+    animation: first-visit-animation 1s ease-in-out;
+    animation-delay: 2s;
+    display: block;
+}
+
+@keyframes first-visit-animation {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
