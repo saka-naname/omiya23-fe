@@ -1,3 +1,30 @@
+
+const countJoin = (id) => {
+    fetch("https://digicre.shibalab.com/event/2023-omiya/?visitor", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            artwork_id: id
+        })
+    }).then(res => res.json()).then(res => {console.log(res)});
+
+    //参加者の合計を取るAPIがないのでid: joinsuにカウントさせる
+    fetch("https://digicre.shibalab.com/event/2023-omiya/?visitor", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            artwork_id: "joinsu"
+        })
+    }).then(res => res.json()).then(res => {console.log(res)});
+
+}
+
+// ↑編集うだい
+
 const url = new URL(window.location.href);
 const params = url.searchParams;
 let storage = [];
@@ -13,7 +40,7 @@ const getStampCountsSafe = () => {
 }
 
 const obtainStamp = (id) => {
-    if (storage.every(elem => {return elem != id})) {
+    if (storage.every(elem => { return elem != id })) {
         storage.push(id);
         localStorage.setItem("obtainedStamps", JSON.stringify(storage));
         return true;
@@ -52,22 +79,28 @@ const renderArtworkPage = async (res) => {
 
 const artwork_page = () => {
     let id = params.get("artwork");
-    if(id && RegExp(/[sd][0-9]{5}/).test(id)) {
+    if (id && RegExp(/[sd][0-9]{5}/).test(id)) {
         // 作品ページにアクセスした場合の処理
-        fetch(`https://digicre.shibalab.com/event/2023-omiya/?artwork=${params.get("artwork")}`, {mode: "cors"})
-        .then(res => renderArtworkPage(res))
+        fetch(`https://digicre.shibalab.com/event/2023-omiya/?artwork=${params.get("artwork")}`, { mode: "cors" })
+            .then(res => renderArtworkPage(res))
 
         let obtained_flag;
         obtained_flag = obtainStamp(id);
 
         if (obtained_flag) {
             // 初回アクセス(スタンプ新規獲得)時のみここが実行される
-
+            // QRコードイベントに参加した人のカウンター
+            countJoin(params.get("artwork"));
+            // アニメーション(妥協)
+            document.querySelector(".first-visit").classList.add("first-visit-animation");
+            setTimeout(() => {
+                document.querySelector(".first-visit").classList.remove("first-visit-animation");
+            }, 3000);
         }
     }
 
     if (id && !RegExp(/[sd][0-9]{5}/).test(id))
-        (async () => renderArtworkPage(new Object({json: () => {return false}})))();
+        (async () => renderArtworkPage(new Object({ json: () => { return false } })))();
 }
 
 const refresh_counts = () => {
@@ -77,3 +110,4 @@ const refresh_counts = () => {
 
 artwork_page();
 refresh_counts();
+
