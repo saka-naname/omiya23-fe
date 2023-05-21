@@ -92,6 +92,13 @@ const artwork_page = () => {
             // QRコードイベントに参加した人のカウンター
             countJoin(params.get("artwork"));
             document.querySelector(".first-visit span").innerText = getStampCountsSafe();
+
+            if (getStampCountsSafe() >= 3) {
+                let omedeto = document.createElement("p");
+                omedeto.innerHTML = "スタンプコンプリート！<br>引き続き大宮祭をお楽しみください！";
+                document.querySelector(".first-visit").appendChild(omedeto);
+            }
+
             // アニメーション(妥協)
             document.querySelector(".first-visit").classList.add("first-visit-animation");
             setTimeout(() => {
