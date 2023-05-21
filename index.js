@@ -91,6 +91,7 @@ const artwork_page = () => {
             // 初回アクセス(スタンプ新規獲得)時のみここが実行される
             // QRコードイベントに参加した人のカウンター
             countJoin(params.get("artwork"));
+            document.querySelector(".first-visit span").innerText = getStampCountsSafe();
             // アニメーション(妥協)
             document.querySelector(".first-visit").classList.add("first-visit-animation");
             setTimeout(() => {
